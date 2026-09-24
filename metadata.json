@@ -1,0 +1,7 @@
+{
+  "name": "Health Data Information & Management System",
+  "description": "Centralized digital health platform for facility-level data entry, hierarchical monitoring, and healthcare programme tracking across District and State levels.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

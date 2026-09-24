@@ -1,0 +1,94 @@
+{
+  "entities": {
+    "Facility": {
+      "title": "Facility",
+      "description": "Healthcare facility entity for primary, community, and district hospitals",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string", "maxLength": 32, "description": "National facility code" },
+        "name": { "type": "string", "maxLength": 128, "description": "Facility name" },
+        "type": { "type": "string", "maxLength": 32, "description": "Facility level" },
+        "district": { "type": "string", "maxLength": 64, "description": "District administrative boundary" },
+        "subDistrict": { "type": "string", "maxLength": 64, "description": "Sub-district or block" },
+        "operationalBeds": { "type": "number", "description": "Number of functional beds" },
+        "inChargeDoctor": { "type": "string", "maxLength": 96, "description": "Medical Officer In-Charge" },
+        "complianceScorePct": { "type": "number", "description": "Audit compliance percentage" },
+        "reportingPunctualityPct": { "type": "number", "description": "Reporting punctuality percentage" },
+        "grade": { "type": "string", "maxLength": 8, "description": "Facility grade rating" }
+      },
+      "required": ["code", "name", "type", "district", "subDistrict"]
+    },
+    "HealthSubmission": {
+      "title": "HealthSubmission",
+      "description": "Monthly verified physical health indicator submission",
+      "type": "object",
+      "properties": {
+        "facilityId": { "type": "string", "maxLength": 64, "description": "Referenced facility identifier" },
+        "facilityName": { "type": "string", "maxLength": 128, "description": "Facility name" },
+        "facilityType": { "type": "string", "maxLength": 32, "description": "Facility category" },
+        "district": { "type": "string", "maxLength": 64, "description": "District name" },
+        "reportMonth": { "type": "string", "maxLength": 32, "description": "Reporting month and year" },
+        "submissionDate": { "type": "string", "maxLength": 32, "description": "Date of initial submission" },
+        "antenatalRegistrations": { "type": "number", "description": "Total registered ANC cases" },
+        "highRiskPregnanciesIdentified": { "type": "number", "description": "High risk pregnancies" },
+        "institutionalDeliveries": { "type": "number", "description": "Institutional delivery count" },
+        "infantImmunizationCompleted": { "type": "number", "description": "Fully immunized infants" },
+        "ncdHypertensionScreened": { "type": "number", "description": "Hypertension screening count" },
+        "ncdDiabetesScreened": { "type": "number", "description": "Diabetes screening count" },
+        "essentialMedicinesAvailablePct": { "type": "number", "description": "Medicine stock percentage" },
+        "maternalDeaths": { "type": "number", "description": "Reported maternal deaths" },
+        "status": { "type": "string", "enum": ["Draft", "Submitted", "Verified", "Rejected"], "description": "Lifecycle status" },
+        "reviewedBy": { "type": "string", "maxLength": 96, "description": "Reviewing officer name" }
+      },
+      "required": ["facilityId", "facilityName", "reportMonth", "status"]
+    },
+    "HealthProgramme": {
+      "title": "HealthProgramme",
+      "description": "National health scheme monitoring indicators and financial burn rate",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string", "maxLength": 32, "description": "Programme acronym" },
+        "name": { "type": "string", "maxLength": 128, "description": "Full scheme title" },
+        "annualTarget": { "type": "number", "description": "Annual physical target" },
+        "currentAchievement": { "type": "number", "description": "Cumulative physical achievement" },
+        "budgetAllocatedCr": { "type": "number", "description": "Budget allocated in Crore INR" },
+        "budgetUtilizedCr": { "type": "number", "description": "Budget utilized in Crore INR" },
+        "unit": { "type": "string", "maxLength": 48, "description": "Target metric unit" },
+        "leadOfficer": { "type": "string", "maxLength": 96, "description": "Nodal officer" }
+      },
+      "required": ["code", "name", "annualTarget", "budgetAllocatedCr"]
+    },
+    "SystemNotification": {
+      "title": "SystemNotification",
+      "description": "System alerts, audit flags, and operational broadcasts",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 128, "description": "Notification subject" },
+        "message": { "type": "string", "maxLength": 512, "description": "Detailed text content" },
+        "type": { "type": "string", "maxLength": 32, "description": "Alert severity category" },
+        "timestamp": { "type": "string", "maxLength": 32, "description": "Timestamp string" },
+        "read": { "type": "boolean", "description": "Read status flag" },
+        "targetRole": { "type": "string", "maxLength": 32, "description": "Target administrative tier" }
+      },
+      "required": ["title", "message", "timestamp", "read"]
+    }
+  },
+  "firestore": {
+    "/facilities/{facilityId}": {
+      "schema": { "$ref": "#/entities/Facility" },
+      "description": "Healthcare facilities registered in the regional monitoring directory"
+    },
+    "/submissions/{submissionId}": {
+      "schema": { "$ref": "#/entities/HealthSubmission" },
+      "description": "Monthly verified physical healthcare indicator returns"
+    },
+    "/programmes/{programmeId}": {
+      "schema": { "$ref": "#/entities/HealthProgramme" },
+      "description": "National health mission scheme progress and budget allocations"
+    },
+    "/notifications/{notificationId}": {
+      "schema": { "$ref": "#/entities/SystemNotification" },
+      "description": "System-wide and facility-directed alert notifications"
+    }
+  }
+}

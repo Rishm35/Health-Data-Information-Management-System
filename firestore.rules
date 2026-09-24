@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net: Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Test connection document for initial boot health check
+    match /test/{docId} {
+      allow get: if true;
+      allow list, write: if false;
+    }
+
+    // Facilities directory
+    match /facilities/{facilityId} {
+      allow get, list: if true;
+      allow create, update: if isSignedIn() && isValidId(facilityId);
+      allow delete: if false;
+    }
+
+    // Monthly Health Submissions
+    match /submissions/{submissionId} {
+      allow get, list: if true;
+      allow create, update: if isSignedIn() && isValidId(submissionId);
+      allow delete: if false;
+    }
+
+    // National Health Programmes tracking
+    match /programmes/{programmeId} {
+      allow get, list: if true;
+      allow create, update: if isSignedIn() && isValidId(programmeId);
+      allow delete: if false;
+    }
+
+    // System notifications and alerts
+    match /notifications/{notificationId} {
+      allow get, list: if true;
+      allow create, update: if isSignedIn() && isValidId(notificationId);
+      allow delete: if false;
+    }
+  }
+}
